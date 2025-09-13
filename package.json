@@ -1,14 +1,14 @@
 {
   "name": "nodejs-echo-api",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "node.js echo api",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Somsak Chartsrisak <somsakc@hotmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
   }

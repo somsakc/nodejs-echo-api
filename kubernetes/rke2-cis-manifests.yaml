@@ -1,0 +1,144 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echo-api-secure
+  labels:
+    app.kubernetes.io/name: nodejs-echo-api
+    app.kubernetes.io/instance: nodejs-echo-api
+    app.kubernetes.io/version: "1.1.0"
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: echo-api
+    app.kubernetes.io/managed-by: kubectl
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-echo-api-svc
+  namespace: echo-api-secure
+  labels:
+    app.kubernetes.io/name: nodejs-echo-api
+    app.kubernetes.io/instance: nodejs-echo-api
+    app.kubernetes.io/version: "1.1.0"
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: echo-api
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: nodejs-echo-api
+    app.kubernetes.io/instance: nodejs-echo-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-echo-api-deployment
+  namespace: echo-api-secure
+  labels:
+    app.kubernetes.io/name: nodejs-echo-api
+    app.kubernetes.io/instance: nodejs-echo-api
+    app.kubernetes.io/version: "1.1.0"
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: echo-api
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nodejs-echo-api
+      app.kubernetes.io/instance: nodejs-echo-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nodejs-echo-api
+        app.kubernetes.io/instance: nodejs-echo-api
+        app.kubernetes.io/version: "1.1.0"
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: echo-api
+        app.kubernetes.io/managed-by: kubectl
+    spec:
+      subdomain: nodejs-echo-api-svc
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      
+      containers:
+      - name: nodejs-echo-api
+        image: mbixtech/nodejs-echo-api:node-20.5-bookworm-slim
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - "ALL"
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+        volumeMounts:
+        - name: tmpfs
+          mountPath: /home/node
+          
+      volumes:
+      - name: tmpfs
+        emptyDir: {}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nodejs-echo-api-ingress
+  namespace: echo-api-secure
+  labels:
+    app.kubernetes.io/name: nodejs-echo-api
+    app.kubernetes.io/instance: nodejs-echo-api
+    app.kubernetes.io/version: "1.1.0"
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: echo-api
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "nodejs-echo-api.apps.r8s3.smartsoft.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nodejs-echo-api-svc
+            port:
+              number: 8080
