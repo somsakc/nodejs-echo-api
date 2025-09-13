@@ -19,7 +19,11 @@ COPY --from=build /tmp/workout/index.js /opt/nodejs-echo-api/index.js
 COPY --from=build /tmp/workout/package.json /opt/nodejs-echo-api/package.json
 COPY --from=build /tmp/workout/node_modules /opt/nodejs-echo-api/node_modules
 ENV HOME=/opt/nodejs-echo-api
-RUN chown -R node /opt/nodejs-echo-api && \
+RUN apt-get -y update && \
+    apt-get -y install curl && \
+    apt-get clean && \
+    rm -fr /var/lib/apt/lists/* && \
+    chown -R node /opt/nodejs-echo-api && \
     chgrp -R 0 /opt/nodejs-echo-api && \
     chmod -R g=u /opt/nodejs-echo-api && \
     ls -al /opt/nodejs-echo-api
