@@ -38,7 +38,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-echo-api-deployment
+  name: nodejs-echo-api
   namespace: echo-api-secure
   labels:
     app.kubernetes.io/name: nodejs-echo-api
@@ -73,7 +73,7 @@ spec:
       
       containers:
       - name: nodejs-echo-api
-        image: mbixtech/nodejs-echo-api:node-20.5-bookworm-slim
+        image: mbixtech/nodejs-echo-api:latest
         ports:
         - containerPort: 8080
           name: http
@@ -132,7 +132,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "nodejs-echo-api.apps.r8s3.smartsoft.com"
+  - host: "nodejs-echo-api.apps.example.com"
     http:
       paths:
       - path: /
