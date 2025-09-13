@@ -83,6 +83,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          - name: VERBOSE_REQUESTS
+            value: "true"
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

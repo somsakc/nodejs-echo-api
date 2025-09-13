@@ -46,9 +46,38 @@ $ curl -Lv http://nodejs-echo-api.apps.example.com | jq -r
 100    96  100    96    0     0  14620      0 --:--:-- --:--:-- --:--:-- 16000
 * Connection #0 to host nodejs-echo-api.apps.example.com left intact
 {
-  "hostname": "nodejs-echo-api--5775cb9cf6-7hdng",
+  "hostname": "nodejs-echo-api-7d68584f6-mzslv",
   "version": "1.0.0",
   "url": "/",
-  "hits": 4631
+  "method": "GET",
+  "hits": 119,
+  "request": {
+    "method": "GET",
+    "url": "/",
+    "path": "/",
+    "originalUrl": "/",
+    "headers": {
+      "host": "nodejs-echo-api-v2.apps.example.com",
+      "x-request-id": "9602b7ed476416525a57870b394449e7",
+      "x-real-ip": "200.xx.xx.xx",
+      "x-forwarded-for": "200.xx.xx.xx",
+      "x-forwarded-host": "nodejs-echo-api-v2.apps.example.com",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https",
+      "x-forwarded-scheme": "https",
+      "x-scheme": "https",
+      "user-agent": "curl/7.81.0",
+      "accept": "*/*"
+    },
+    "query": {},
+    "params": {
+      "0": "/"
+    },
+    "ip": "::ffff:10.42.26.248",
+    "protocol": "http",
+    "secure": false,
+    "host": "nodejs-echo-api-v2.apps.example.com",
+    "hostname": "nodejs-echo-api-v2.apps.example.com"
+  }
 }
 ```
